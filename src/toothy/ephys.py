@@ -23,9 +23,9 @@ import quantities as pq
 import probeinterface as prif
 import pdb
 # custom modules
-import pyfx
-import qparam
-import icsd
+from . import pyfx
+from . import qparam
+from . import icsd
 
 
 ##############################################################################
@@ -37,6 +37,24 @@ import icsd
 ##############################################################################
 
 ###   BASE FOLDERS   ###
+
+def config_dir():
+    """
+    Return the directory holding Toothy's settings files, creating it if needed.
+
+    Settings live outside the installed package so that they survive upgrades and
+    so a read-only install (e.g. a system-wide pip install) still works. Override
+    the location with the TOOTHY_CONFIG_DIR environment variable.
+    """
+    ddir = Path(os.environ.get('TOOTHY_CONFIG_DIR', Path.home() / '.toothy'))
+    ddir.mkdir(parents=True, exist_ok=True)
+    return ddir
+
+
+def config_path(fname='default_folders.txt'):
+    """ Return the full path to a settings file in the Toothy config directory """
+    return Path(config_dir(), fname)
+
 
 def base_dirs(return_keys=False): #✅
     """
@@ -53,7 +71,7 @@ def base_dirs(return_keys=False): #✅
         False (default):    produces list of paths only, i.e. ["C:/Users/...", "C:/Users/.../probe_file_dir/", ...]
     """
     # Open the text file and extract key/value pairs line by line
-    with open('default_folders.txt', 'r') as file:
+    with open(config_path(), 'r') as file:
         # Code explanation:
             # Get a list of lines in the file with file.readlines()
             # Iterate over each line via the list comprehension
@@ -79,7 +97,7 @@ def write_base_dirs(ddir_list):
     """ Write input directories to default_folders.txt """
     assert len(ddir_list) == 4
     keys = ['RAW_DATA','PROBE_FILES','DEFAULT_PROBE', 'DEFAULT_PARAMETERS']
-    with open('default_folders.txt', 'w') as fid:
+    with open(config_path(), 'w') as fid:
         for k,path in zip(keys, ddir_list):
             fid.write(k + ' = ' + str(path) + '\n')
 
@@ -92,14 +110,14 @@ def clean_base_dirs():
     else: raw_data_path = str(os.getcwd())
     if 'PROBE_FILES' in keys and os.path.isdir(paths[keys.index('PROBE_FILES')]):
         probe_file_path = paths[keys.index('PROBE_FILES')]
-    else: probe_file_path = str(os.getcwd())
+    else: probe_file_path = str(config_path('probe_configs'))
     if 'DEFAULT_PROBE' in keys and os.path.isfile(paths[keys.index('DEFAULT_PROBE')]):
         default_probe_path = paths[keys.index('DEFAULT_PROBE')]
     else: default_probe_path = ''
     if 'DEFAULT_PARAMETERS' in keys and os.path.isfile(paths[keys.index('DEFAULT_PARAMETERS')]):
         param_path = paths[keys.index('DEFAULT_PARAMETERS')]
     else:
-        param_path = Path(os.getcwd(), 'default_params.txt')
+        param_path = config_path('default_params.txt')
         if not os.path.isfile(param_path):
             print('Parameter file not found. Creating default_params.txt file ...')
             tmp = qparam.get_original_defaults()
@@ -119,10 +137,10 @@ def clean_base_dirs():
 def init_default_folders():
     """ Generate an initial default_folders.txt file """
     print('Initializing application settings ...')
-    default_data_folder  = os.getcwd()
-    default_probe_folder = Path(os.getcwd(), 'probe_configs')
+    default_data_folder  = os.getcwd()   # initial folder for browsing raw recordings
+    default_probe_folder = config_path('probe_configs')
     default_probe_file   = ''
-    default_param_file   = Path(os.getcwd(), 'default_params.txt')
+    default_param_file   = config_path('default_params.txt')
     if not os.path.isdir(default_probe_folder):
         print('Creating "probe_config" folder with demo probe configuration file ...')
         os.makedirs(default_probe_folder)  # initialize probe folder

@@ -2,43 +2,48 @@
 
 # Installation
 
-**1) Download Miniconda or Anaconda Navigator**
+Toothy requires **Python 3.11 or newer**. It is not on PyPI yet, so install it from a clone of this repository.
 
-- Miniconda: [https://docs.anaconda.com/miniconda/miniconda-install/](https://docs.anaconda.com/miniconda/miniconda-install/)
-- Anaconda Navigator: [https://www.anaconda.com/download](https://www.anaconda.com/download)
-  - Navigator provides a GUI and a large suite of packages/applications, but takes up much more disk space
-
-**2) Download the Toothy repository as a ZIP file from GitHub. Unpack the ZIP to create a folder, referred to below as the "Toothy folder."**
-
-**3) Open an Anaconda Prompt terminal window and navigate to the Toothy folder.**
+**1) Clone the repository and enter it.**
 
 ```
-cd [PATH_TO_TOOTHY_FOLDER]
+git clone https://github.com/Farrell-Laboratory/Toothy.git
+cd Toothy
 ```
 
-- e.g. `cd C:\User\Documents\Data\Toothy-main`
-
-**4) Create a new Anaconda environment for the Toothy application using the provided `environment.yml` file. The following command creates a Python 3.11 environment called "toothy_env"  and installs all the necessary dependencies.**
+**2) Create and activate a virtual environment.**
 
 ```
-conda env create environment.yml
+python -m venv .venv
+source .venv/bin/activate      # Windows: .venv\Scripts\activate
 ```
 
-*If you already have an environment called `toothy_env`, remove it first by running: `conda remove --name toothy_env --all` or change the name of the environment inside `environment.yml`.*
-
-**5) Activate the environment.**
+**3) Install Toothy and its dependencies.**
 
 ```
-conda activate toothy_env
+pip install -e .
 ```
 
-**7) Run the application!**
+Use `pip install -e ".[dev]"` to also install the test dependencies.
+
+**4) Run the application!**
 
 ```
-python toothy.py
+toothy
 ```
 
-  
+Installing the package creates a `toothy` command. You can also launch it with `python -m toothy`.
+
+## Settings
+
+Toothy stores its settings (`default_folders.txt`, `default_params.txt`, and a `probe_configs` folder) in `~/.toothy`. Set the `TOOTHY_CONFIG_DIR` environment variable to keep them somewhere else.
+
+## Running the tests
+
+```
+pip install -e ".[dev]"
+pytest
+```
 
 
 # Getting Started

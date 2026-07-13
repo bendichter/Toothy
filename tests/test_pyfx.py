@@ -2,7 +2,7 @@
 import numpy as np
 import pytest
 
-import pyfx
+from toothy import pyfx
 
 
 ###   GENERAL FUNCTIONS   ###

@@ -10,8 +10,8 @@ import numpy as np
 from PyQt5 import QtWidgets, QtCore, QtGui
 import pdb
 # custom modules
-import QSS
-import pyfx
+from . import QSS
+from . import pyfx
 
 
 ##############################################################################

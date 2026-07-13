@@ -27,9 +27,9 @@ import quantities as pq
 import warnings
 import pdb
 # custom modules
-import pyfx
-import ephys
-import gui_items as gi
+from . import pyfx
+from . import ephys
+from . import gui_items as gi
 
 supported_formats = {'NeuroNexus' : ['NeuroNexus', '.xdat.json'],
                      'OpenEphys'  : ['Open Ephys', '.oebin'],

@@ -25,12 +25,12 @@ import quantities as pq
 from PyQt5 import QtWidgets, QtCore, QtGui
 import pdb
 # custom modules
-import QSS
-import pyfx
-import ephys
-import gui_items as gi
-import data_processing as dp
-import resources_rc
+from . import QSS
+from . import pyfx
+from . import ephys
+from . import gui_items as gi
+from . import data_processing as dp
+from . import resources_rc
 
 
 def str_fmt(ddict, key=None, key_top=True):

@@ -14,11 +14,11 @@ import os
 from PyQt5 import QtWidgets, QtCore, QtGui
 
 # Import custom modules
-import qparam
-import ephys
-import pyfx
-import gui_items as gi
-import resources_v2     # For icons (":/resources/...") see resources.qrc
+from . import qparam
+from . import ephys
+from . import pyfx
+from . import gui_items as gi
+from . import resources_v2     # For icons (":/resources/...") see resources.qrc
 
 class SetParametersPopup(QtWidgets.QDialog):
     """

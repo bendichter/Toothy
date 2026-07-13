@@ -1,16 +1,13 @@
-"""Shared fixtures and headless setup for the Toothy test suite."""
+"""Shared fixtures and headless setup for the Toothy test suite.
+
+Run against an installed copy of the package: `pip install -e ".[dev]" && pytest`.
+"""
 import os
-import sys
-from pathlib import Path
 
 # Toothy imports PyQt5 and matplotlib at module level; force both to run headless
 # before any test module imports them.
 os.environ.setdefault('QT_QPA_PLATFORM', 'offscreen')
 os.environ.setdefault('MPLBACKEND', 'Agg')
-
-REPO_ROOT = Path(__file__).resolve().parents[1]
-if str(REPO_ROOT) not in sys.path:
-    sys.path.insert(0, str(REPO_ROOT))
 
 import numpy as np
 import pandas as pd

@@ -2,6 +2,10 @@
 /__pycache__
 __pycache__/
 .pytest_cache/
+build/
+dist/
+*.egg-info/
+.venv/
 default_folders.txt
 default_params.txt
 /probe_configs

@@ -15,11 +15,11 @@ import os
 from PyQt5 import QtWidgets, QtCore, QtGui
 
 # Import custom modules
-import pyfx
-import qparam
-import ephys
-import gui_items as gi
-import resources_v2     # For icons (":/resources/...") see resources.qrc
+from . import pyfx
+from . import qparam
+from . import ephys
+from . import gui_items as gi
+from . import resources_v2     # For icons (":/resources/...") see resources.qrc
 
 
 class SetPathsWidget(QtWidgets.QWidget):

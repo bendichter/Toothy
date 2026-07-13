@@ -15,13 +15,13 @@ from PyQt5 import QtWidgets, QtCore
 import time
 import pdb
 # custom modules
-import QSS
-import pyfx
-import ephys
-import data_processing as dp
-import gui_items as gi
-from channel_selection_gui import ChannelSelectionWindow
-from ds_classification_gui import DS_CSDWindow
+from . import QSS
+from . import pyfx
+from . import ephys
+from . import data_processing as dp
+from . import gui_items as gi
+from .channel_selection_gui import ChannelSelectionWindow
+from .ds_classification_gui import DS_CSDWindow
 
 
 ##############################################################################

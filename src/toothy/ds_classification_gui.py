@@ -22,11 +22,11 @@ from sklearn.cluster import KMeans
 from PyQt5 import QtWidgets, QtCore
 import pdb
 # custom modules
-import QSS
-import pyfx
-import ephys
-import gui_items as gi
-import data_processing as dp
+from . import QSS
+from . import pyfx
+from . import ephys
+from . import gui_items as gi
+from . import data_processing as dp
 
 
 class IFigCSD(matplotlib.figure.Figure):

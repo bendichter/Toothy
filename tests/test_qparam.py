@@ -1,7 +1,7 @@
 """Tests for qparam: parameter validation, repair, and .txt file I/O."""
 import pytest
 
-import qparam
+from toothy import qparam
 
 
 ###   VALIDATION   ###

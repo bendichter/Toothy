@@ -2,7 +2,7 @@
 import numpy as np
 import pytest
 
-import data_processing as dp
+from toothy import data_processing as dp
 
 
 ###   RAW FORMAT VALIDATION   ###

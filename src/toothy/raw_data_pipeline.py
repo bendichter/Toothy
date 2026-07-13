@@ -23,15 +23,15 @@ import pickle
 import probeinterface as prif
 
 # Import custom modules
-import QSS
-import pyfx
-import qparam
-import ephys
-import gui_items as gi
-import data_processing as dp
-from probe_handler import ProbeObjectPopup
-import resources_rc
-import resources_v2
+from . import QSS
+from . import pyfx
+from . import qparam
+from . import ephys
+from . import gui_items as gi
+from . import data_processing as dp
+from .probe_handler import ProbeObjectPopup
+from . import resources_rc
+from . import resources_v2
 
 #################################################
 #################################################

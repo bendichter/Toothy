@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-import ephys
+from toothy import ephys
 from conftest import LFP_FS, gaussian_bump
 
 
@@ -302,10 +302,20 @@ def test_read_notes_missing_file_returns_empty_string(tmp_path):
     assert ephys.read_notes(tmp_path / 'nope.txt') == ''
 
 
+def test_config_dir_honors_env_override(tmp_path, monkeypatch):
+    monkeypatch.setenv('TOOTHY_CONFIG_DIR', str(tmp_path / 'cfg'))
+    assert ephys.config_dir() == tmp_path / 'cfg'
+    assert ephys.config_dir().is_dir()   # created on demand
+    assert ephys.config_path() == tmp_path / 'cfg' / 'default_folders.txt'
+
+
 def test_base_dirs_roundtrip(tmp_path, monkeypatch):
-    monkeypatch.chdir(tmp_path)   # base_dirs reads default_folders.txt from cwd
+    monkeypatch.setenv('TOOTHY_CONFIG_DIR', str(tmp_path))
     paths = ['/data/raw', '/data/probes', '/data/probe.json', '/data/params.txt']
     ephys.write_base_dirs(paths)
+
+    # settings are written to the config dir, not the install dir or the cwd
+    assert (tmp_path / 'default_folders.txt').is_file()
 
     assert ephys.base_dirs() == paths
     assert ephys.base_dirs(return_keys=True) == [
@@ -317,6 +327,6 @@ def test_base_dirs_roundtrip(tmp_path, monkeypatch):
 
 
 def test_write_base_dirs_requires_four_paths(tmp_path, monkeypatch):
-    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv('TOOTHY_CONFIG_DIR', str(tmp_path))
     with pytest.raises(AssertionError):
         ephys.write_base_dirs(['/data/raw'])

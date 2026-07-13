@@ -1,0 +1,60 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "toothy"
+version = "0.1.0"
+description = "A graphical user interface for curating dentate spikes"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [
+    { name = "Amanda Schott" },
+    { name = "Kathleen Esfahany" },
+]
+keywords = ["neuroscience", "electrophysiology", "dentate spikes", "hippocampus", "LFP"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+
+# Upper bounds are deliberate, not incidental:
+#   numpy <2  -- numpy 2 changed scalar repr, which corrupts the Qt stylesheet
+#                strings built by pyfx.qstyle_rgb (rgb(np.int32(255), ...)).
+#   pandas <3 -- pandas 3 enables copy-on-write, making DataFrame.values read-only;
+#                ephys.estimate_ripple_chan/estimate_hil_chan assign into it.
+# Both are tracked as forward-compatibility bugs; lift the caps once they're fixed.
+dependencies = [
+    "numpy>=1.26,<2",
+    "pandas>=2.1,<3",
+    "scipy>=1.13",
+    "matplotlib>=3.8",
+    "scikit-learn>=1.2",
+    "seaborn>=0.13",
+    "PyQt5>=5.15",
+    "h5py>=3.9",
+    "tables>=3.9",
+    "neo>=0.14",
+    "quantities>=0.15",
+    "probeinterface>=0.2.23",
+    "spikeinterface>=0.102",
+    "open-ephys-python-tools>=0.1.10",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.urls]
+Homepage = "https://github.com/Farrell-Laboratory/Toothy"
+
+[project.scripts]
+toothy = "toothy.toothy:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "--strict-markers"

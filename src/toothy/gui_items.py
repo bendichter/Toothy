@@ -16,13 +16,13 @@ from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as Navigatio
 from PyQt5 import QtWidgets, QtCore, QtGui
 import pdb
 # custom modules
-import QSS
-import pyfx
-import qparam
-import ephys
-import data_processing as dp # not used
-import resources_rc
-import resources_v2
+from . import QSS
+from . import pyfx
+from . import qparam
+from . import ephys
+from . import data_processing as dp # not used
+from . import resources_rc
+from . import resources_v2
 
 
 ##############################################################################

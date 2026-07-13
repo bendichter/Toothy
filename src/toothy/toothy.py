@@ -15,28 +15,21 @@ from pathlib import Path
 # Import PyQt5 (PyQt5 is a Python version of the Qt framework for building GUI applications)
 from PyQt5 import QtWidgets, QtCore, QtGui
 
-# Set app folder as current working directory
-    # Notes:
-    # __file__ is a special Python variable that holds the path of the current file (.../toothy.py)
-    # .parent returns the path to the directory containing the file (i.e. Toothy-main if repo is downloaded off GitHub)
-    # os.chdir() changes the current working directory to the specified parent path
-    # Why? To ensure the custom modules are imported correctly
-app_dir = Path(__file__).parent 
-os.chdir(app_dir)
+app_dir = Path(__file__).parent
 
 # Import custom modules
-import QSS      # Stylesheet definitions for GUI elements
-import pyfx     # Misc. helper functions
-import ephys    # File I/O and event detection
-import gui_items as gi  #  GUI helpers
-import resources_v2     # Compiled resources (images) referenced with ":/..."
+from . import QSS      # Stylesheet definitions for GUI elements
+from . import pyfx     # Misc. helper functions
+from . import ephys    # File I/O and event detection
+from . import gui_items as gi  #  GUI helpers
+from . import resources_v2     # Compiled resources (images) referenced with ":/..."
 
 # Import QDialog widgets for each part of the Toothy workflow
-from raw_data_pipeline import InputDataSelectionPopup               # Step 1 (Selection of input data, triggers processing pipeline)
-from processed_data_hub import ProcessedRecordingSelectionPopup     # Step 2 (Interact with the processed data to select channels and classify events)
-from gui_set_paths import SetPathsPopup                             # Convenience: Set paths for input data, probe configuration files, etc.
-from gui_set_parameters import SetParametersPopup                   # Convenience: Set parameters
-from probe_handler import ProbeObjectPopup                          # Convenience: Create probe configuration files
+from .raw_data_pipeline import InputDataSelectionPopup               # Step 1 (Selection of input data, triggers processing pipeline)
+from .processed_data_hub import ProcessedRecordingSelectionPopup     # Step 2 (Interact with the processed data to select channels and classify events)
+from .gui_set_paths import SetPathsPopup                             # Convenience: Set paths for input data, probe configuration files, etc.
+from .gui_set_parameters import SetParametersPopup                   # Convenience: Set parameters
+from .probe_handler import ProbeObjectPopup                          # Convenience: Create probe configuration files
 
 # Define a QMainWindow class "toothy"
 class toothy(QtWidgets.QMainWindow):
@@ -45,8 +38,8 @@ class toothy(QtWidgets.QMainWindow):
         # Initalize parent class
         super().__init__()
 
-        # Load base data directories
-        if not os.path.exists('default_folders.txt'):
+        # Load base data directories (settings live in ephys.config_dir())
+        if not os.path.exists(ephys.config_path()):
             ephys.init_default_folders()
         ephys.clean_base_dirs()
         
@@ -236,17 +229,21 @@ class toothy(QtWidgets.QMainWindow):
         # Move the actual window to the newly-centered "widget_rect", specified by the top left corner coordinates
         self.move(widget_rect.topLeft())
     
-if __name__ == '__main__':
-    """Runs when toothy.py is executed as a script. Launches the Toothy GUI."""
+def main():
+    """ Launch the Toothy GUI. Entry point for the `toothy` console script. """
     # Initilize QApplication
     app = pyfx.qapp()
-    
+
     # Create and show QMainWindow widget
     # Note: widgets implicitly attach to the QApplication instance (app) created above
     ToothyWindow = toothy()
 
     # Bring window to front
     ToothyWindow.raise_()
-    
+
     # After creating window, start the event loop
-    sys.exit(app.exec())
+    return app.exec()
+
+
+if __name__ == '__main__':
+    sys.exit(main())

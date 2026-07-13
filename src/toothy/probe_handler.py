@@ -19,10 +19,10 @@ import probeinterface as prif
 from probeinterface.plotting import plot_probe
 import pdb
 # custom modules
-import pyfx
-import ephys
-import gui_items as gi
-import resources_rc
+from . import pyfx
+from . import ephys
+from . import gui_items as gi
+from . import resources_rc
 
 
 ##############################################################################
