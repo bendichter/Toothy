@@ -1,5 +1,7 @@
 .DS_Store
 /__pycache__
+__pycache__/
+.pytest_cache/
 default_folders.txt
 default_params.txt
 /probe_configs

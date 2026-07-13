@@ -1,0 +1,94 @@
+name: release
+
+# Cut a release by pushing a version tag:
+#     git tag v1.0.0 && git push origin v1.0.0
+#
+# Toothy currently ships as a conda-environment application rather than a pip
+# package, so a release publishes a runnable source archive. Once the repo grows
+# packaging metadata (pyproject.toml / setup.py), add a build + PyPI publish step
+# to the `release` job below.
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing tag to release (e.g. v1.0.0)'
+        required: true
+
+permissions:
+  contents: write   # required to create the GitHub Release
+
+jobs:
+  # A release must not ship code that fails the suite.
+  test:
+    uses: ./.github/workflows/tests.yml
+
+  release:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref }}
+          fetch-depth: 0   # full history, so release notes can diff against the previous tag
+
+      - name: Resolve version
+        id: version
+        run: echo "tag=${{ github.event.inputs.tag || github.ref_name }}" >> "$GITHUB_OUTPUT"
+
+      - name: Verify tag looks like a version
+        run: |
+          tag='${{ steps.version.outputs.tag }}'
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([.-].+)?$ ]]; then
+            echo "::error::Tag '$tag' is not a vMAJOR.MINOR.PATCH version."
+            exit 1
+          fi
+
+      # The application archive excludes the 84 MB example dataset, the docs
+      # images, and CI/test scaffolding — it is what a user needs in order to run
+      # `conda env create environment.yml && python toothy.py`.
+      - name: Build source archive
+        id: archive
+        run: |
+          tag='${{ steps.version.outputs.tag }}'
+          name="toothy-${tag#v}"
+          mkdir -p "dist/$name"
+          cp *.py environment.yml README.md "dist/$name/"
+          [ -f LICENSE ] && cp LICENSE "dist/$name/" || true
+          cd dist
+          zip -r "$name.zip" "$name" > /dev/null
+          echo "path=dist/$name.zip" >> "$GITHUB_OUTPUT"
+          echo "name=$name" >> "$GITHUB_OUTPUT"
+
+      # Smoke-check the archive: the app's modules must import from a clean copy.
+      - name: Verify archive contents
+        run: |
+          cd dist/${{ steps.archive.outputs.name }}
+          for f in toothy.py ephys.py pyfx.py qparam.py data_processing.py environment.yml; do
+            test -f "$f" || { echo "::error::$f missing from release archive"; exit 1; }
+          done
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: Toothy ${{ steps.version.outputs.tag }}
+          generate_release_notes: true
+          files: ${{ steps.archive.outputs.path }}
+          body: |
+            ## Install
+
+            1. Download and unzip `${{ steps.archive.outputs.name }}.zip` below.
+            2. Create the environment:
+               ```
+               conda env create environment.yml
+               conda activate toothy_env
+               ```
+            3. Run the app:
+               ```
+               python toothy.py
+               ```
+
+            See the [README](https://github.com/${{ github.repository }}/blob/${{ steps.version.outputs.tag }}/README.md) for the full workflow.
